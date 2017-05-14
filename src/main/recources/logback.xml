@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE logback>
+<configuration>
+
+	<timestamp key="time" datePattern="yyyy-MM-dd_HHmmss" />
+
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		<file>log/log-${time}.log</file>
+		<encoder>
+			<charset>UTF-8</charset>
+			<pattern>%-7([%level]) %m%n</pattern>
+		</encoder>
+
+	</appender>
+
+	<appender name="rolling"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_DIR}/roll_a_lbsample.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_DIR}/rolling_lbsample_%d{yyyy-MM-dd_HH-mm}.log</fileNamePattern>
+			<maxHistory>10</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%-5r %d{yyyyMMdd HH:mm:ss.SSS} [%t] %-5le %lo{35} - %msg %n</pattern>
+		</encoder>
+	</appender>
+
+	<root>
+		<appender-ref ref="FILE" />
+	</root>
+</configuration>
