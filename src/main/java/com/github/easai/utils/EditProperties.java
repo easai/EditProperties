@@ -27,6 +27,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -51,7 +52,7 @@ public class EditProperties extends JDialog {
 	JButton cancel = new JButton("Cencel");
 	JButton save = new JButton("Save");
 
-	public EditProperties(Properties properties, String fileName) {
+	public EditProperties(Properties properties) {
 		super((Frame) null, "Edit Properties", true);
 		this.properties = properties;
 	}
@@ -82,6 +83,16 @@ public class EditProperties extends JDialog {
 		mFile.add(miSave);
 		mFile.add(miQuit);
 		menuBar.add(mFile);
+		
+		JMenu mEdit= new JMenu("Edit");
+		JMenuItem miAddProperty= new JMenuItem("Add Property");
+		miAddProperty.addActionListener(new ActionAdaptor() {
+			public void actionPerformed(ActionEvent e) {
+				addProperty();
+			}
+		});
+		mEdit.add(miAddProperty);
+		menuBar.add(mEdit);
 		this.setJMenuBar(menuBar);
 
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -115,6 +126,12 @@ public class EditProperties extends JDialog {
 		return properties;
 	}
 
+	public void addProperty(){
+		String key = JOptionPane.showInputDialog(null, "Property");
+		properties.setProperty(key, "");
+		setTable();
+	}
+	
 	public String defaultProperty(String propertyName, String defaultValue) {
 		String property = "";
 		if ((property = properties.getProperty(propertyName)) == null || property.equals(""))
@@ -237,7 +254,7 @@ public class EditProperties extends JDialog {
 		properties.setProperty("date created", "Fri Dec 10 20:50:33 2004");
 		properties.setProperty("debug", "true");
 		properties.setProperty("verbose", "false");
-		EditProperties editProperties = new EditProperties(properties, "EditProperties.ini");
+		EditProperties editProperties = new EditProperties(properties);
 		properties = editProperties.init();
 	}
 }
