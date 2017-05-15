@@ -1,11 +1,3 @@
-/*
- * 
- * This file is a part of the article "Edit Properties with JTable".
- * Please refer to the following link for more information.
- * http://easai.00freehost.com/table.html
- * 
-*/
-
 package com.github.easai.utils;
 
 import java.awt.BorderLayout;
@@ -51,12 +43,36 @@ public class EditProperties extends JDialog {
 	CellRenderer cellRenderer = new CellRenderer();
 	JButton cancel = new JButton("Cencel");
 	JButton save = new JButton("Save");
+	String propertyFile = "";
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param properties
+	 *            the property values
+	 */
 	public EditProperties(Properties properties) {
 		super((Frame) null, "Edit Properties", true);
 		this.properties = properties;
 	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param properties
+	 *            the property
+	 * @param propertyFile
+	 *            the property file
+	 */
+	public EditProperties(Properties properties, String propertyFile) {
+		super((Frame) null, "Edit Properties", true);
+		this.propertyFile = propertyFile;
+		this.properties = properties;
+	}
+
+	/**
+	 * Initialize the dialog.
+	 */
 	public Properties init() {
 		Container panel = getContentPane();
 
@@ -83,9 +99,9 @@ public class EditProperties extends JDialog {
 		mFile.add(miSave);
 		mFile.add(miQuit);
 		menuBar.add(mFile);
-		
-		JMenu mEdit= new JMenu("Edit");
-		JMenuItem miAddProperty= new JMenuItem("Add Property");
+
+		JMenu mEdit = new JMenu("Edit");
+		JMenuItem miAddProperty = new JMenuItem("Add Property");
 		miAddProperty.addActionListener(new ActionAdaptor() {
 			public void actionPerformed(ActionEvent e) {
 				addProperty();
@@ -105,7 +121,7 @@ public class EditProperties extends JDialog {
 
 		save.addActionListener(new ActionAdaptor() {
 			public void actionPerformed(ActionEvent e) {
-				savePropertyFile();
+				saveProperties();
 			}
 		});
 		cancel.addActionListener(new ActionAdaptor() {
@@ -122,16 +138,26 @@ public class EditProperties extends JDialog {
 
 		pack();
 		setVisible(true);
-
+		
 		return properties;
 	}
 
-	public void addProperty(){
+	/**
+	 * Prompts for a new property key value.
+	 */
+	public void addProperty() {
 		String key = JOptionPane.showInputDialog(null, "Property");
 		properties.setProperty(key, "");
 		setTable();
 	}
-	
+
+	/**
+	 * 
+	 * 
+	 * @param propertyName
+	 * @param defaultValue
+	 * @return
+	 */
 	public String defaultProperty(String propertyName, String defaultValue) {
 		String property = "";
 		if ((property = properties.getProperty(propertyName)) == null || property.equals(""))
@@ -140,6 +166,9 @@ public class EditProperties extends JDialog {
 		return property;
 	}
 
+	/**
+	 * Update the property-value table.
+	 */
 	public void setTable() {
 		DefaultTableModel tableModel = new DefaultTableModel(header, 0);
 
@@ -160,6 +189,9 @@ public class EditProperties extends JDialog {
 		}
 	}
 
+	/**
+	 * Prompts for a property file for editing.
+	 */
 	public void openPropertyFile() {
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setCurrentDirectory(new File("."));
@@ -173,6 +205,12 @@ public class EditProperties extends JDialog {
 		}
 	}
 
+	/**
+	 * Reads property values from the property file.
+	 * 
+	 * @param fileName
+	 *            the property file
+	 */
 	public void readProperties(String fileName) {
 		FileInputStream in = null;
 		try {
@@ -194,19 +232,32 @@ public class EditProperties extends JDialog {
 		}
 	}
 
+	/**
+	 * Prompts for property file for saving the property values.
+	 */
 	public void savePropertyFile() {
-		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.setCurrentDirectory(new File("."));
-		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		int res = fileChooser.showSaveDialog(this);
-		if (res == JFileChooser.APPROVE_OPTION) {
-			File file = fileChooser.getSelectedFile();
-			String fn = file.getPath();
-			saveProperties();
-			writeProperties(fn);
+		if (propertyFile.isEmpty()) {
+			JFileChooser fileChooser = new JFileChooser();
+			fileChooser.setCurrentDirectory(new File("."));
+			fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			int res = fileChooser.showSaveDialog(this);
+			if (res == JFileChooser.APPROVE_OPTION) {
+				File file = fileChooser.getSelectedFile();
+				propertyFile= file.getPath();
+			}
+		}
+		if(!propertyFile.isEmpty()){
+			File file=new File(propertyFile);
+			if(file.exists() && !file.isDirectory()){
+				saveProperties();
+				writeProperties(propertyFile);							
+			}
 		}
 	}
 
+	/**
+	 * Retrieves the property values from the table.
+	 */
 	public void saveProperties() {
 		String propertyName = "", propertyValue;
 		TableCellEditor editor = null;
@@ -228,6 +279,11 @@ public class EditProperties extends JDialog {
 		}
 	}
 
+	/**
+	 * Saves the property values.
+	 * 
+	 * @param fileName
+	 */
 	public void writeProperties(String fileName) {
 		FileOutputStream out = null;
 		try {
@@ -255,6 +311,6 @@ public class EditProperties extends JDialog {
 		properties.setProperty("debug", "true");
 		properties.setProperty("verbose", "false");
 		EditProperties editProperties = new EditProperties(properties);
-		properties = editProperties.init();
+		properties=editProperties.init();
 	}
 }
