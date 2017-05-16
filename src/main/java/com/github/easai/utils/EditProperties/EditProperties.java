@@ -1,4 +1,4 @@
-package com.github.easai.utils;
+package com.github.easai.utils.EditProperties;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -72,6 +72,8 @@ public class EditProperties extends JDialog {
 
 	/**
 	 * Initialize the dialog.
+	 * 
+	 * @return the edited property object.
 	 */
 	public Properties init() {
 		Container panel = getContentPane();
@@ -152,10 +154,10 @@ public class EditProperties extends JDialog {
 	}
 
 	/**
+	 * Sets default values for the property.
 	 * 
-	 * 
-	 * @param propertyName
-	 * @param defaultValue
+	 * @param propertyName the property
+	 * @param defaultValue the value
 	 * @return
 	 */
 	public String defaultProperty(String propertyName, String defaultValue) {
@@ -282,7 +284,7 @@ public class EditProperties extends JDialog {
 	/**
 	 * Saves the property values.
 	 * 
-	 * @param fileName
+	 * @param fileName the configuration (init) file
 	 */
 	public void writeProperties(String fileName) {
 		FileOutputStream out = null;

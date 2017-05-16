@@ -1,4 +1,4 @@
-package com.github.easai.utils;
+package com.github.easai.utils.EditProperties;
 
 import java.awt.Color;
 import java.awt.Component;
